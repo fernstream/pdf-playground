@@ -1,34 +1,7 @@
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import fs from 'fs';
-
-class Cursor {
-  constructor(page, margin, width) {
-    this.page = page;
-    this.margin = margin;
-    this.width = width;
-    this.lineEnd = width - margin;
-    this.y = page.getHeight() - margin;
-  }
-
-  moveDown(amount) {
-    this.y -= amount;
-  }
-
-  drawLine(thickness = 1) {
-    this.page.drawLine({
-      start: { x: this.margin, y: this.y },
-      end: { x: this.lineEnd, y: this.y },
-      thickness,
-      color: rgb (0, 0, 0),
-    });
-  }
-
-  finishRow(rowHeight = 0) {
-    this.moveDown(rowHeight + 10);
-    this.drawLine();
-    this.moveDown(20);
-  }
-}
+import pdfList from './pdflist-data.js';
+import { Cursor } from './cursor.js';
 
 const pdfDoc = await PDFDocument.create();
 const fontDefault = await pdfDoc.embedFont(StandardFonts.Helvetica);
@@ -53,63 +26,6 @@ const Xcol3 = margin + (colWidth * 2);
 const fontSize = 10;
 const lineHeight = fontSize + 4;
 
-// List data
-const pdfList = [
-  {
-    "function":  "drawText",
-    "parameters": [
-        "text",
-        "x",
-        "y",
-        "size",
-        "font",
-        "color"
-    ],
-    "description": "Standard function to draw text"
-},
-  {
-    "function": "drawRectangle",
-    "parameters": [
-      "x",
-      "y",
-      "width",
-      "height",
-      "color",
-      "opacity"
-    ],
-    "description": "Draws a rectangle on the PDF page. Great for creating borders, backgrounds, or highlighting specific areas."
-  },
-  {
-    "function": "drawLine",
-    "parameters": [
-      "start: { x, y }",
-      "end: { x, y }",
-      "thickness"
-    ],
-    "description": "Draws a line on the PDF page. Useful for creating dividers, underlines, or custom shapes. Requires start and end coordinates, as well as thickness for the line."
-  },
-  {
-    "function": "drawCircle",
-    "parameters": [
-      "x",
-      "y",
-      "size",
-      "color"
-    ],
-    "description": "Draws a circle on the PDF page. Perfect for creating bullet points, decorative elements, or highlighting specific areas. Warning - size is the radius of the circle, not the diameter."
-  },
-  {
-    "function": "drawEllipse",
-    "parameters": [
-      "x",
-      "y",
-      "xScale",
-      "yScale",
-      "color"
-    ],
-    "description": "Draws an ellipse on the PDF page. Perfect for creating decorative elements or highlighting specific areas. It will crash if xScale or yScale is missing - make sure to include both parameters."
-  }
-]
 const colHeaders = ['Function', 'Parameters', 'Description'];
 
 
