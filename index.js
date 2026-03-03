@@ -1,19 +1,28 @@
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import fs from 'fs';
-import { setupPDF } from './pdfService.js';
 import pdfList from './pdflist-data.js';
+import { setupPDF } from './pdfService.js';
 import { Cursor } from './cursor.js';
 import { drawTable } from './tableRenderer.js';
+import { drawHeader, drawFooter } from './header-fototer-layout.js';
 
 const { pdfDoc, fontDefault, fontBold, page } = await setupPDF();
-const { width } = page.getSize();
 const margin = 50;
 
+const headerHeight = 80;
+const footerHeight = 60;
+
 // Tools
-const cursor = new Cursor(page, margin, width);
+const cursor = new Cursor({
+  page,
+  margin,
+  headerHeight,
+  footerHeight,
+});
 
 // Execute tasks
-await drawTable(page, cursor, pdfList, fontDefault, fontBold);
+drawHeader(page, fontBold, margin);
+drawTable(cursor, pdfList, fontDefault, fontBold);
+drawFooter(page, fontDefault, margin);
 
 // Save logic
 const pdfBytes = await pdfDoc.save();
