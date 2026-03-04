@@ -26,22 +26,18 @@ export class Cursor {
     return (this.y - requiredHeight) >= this.yBottom;
   }
 
-  async prepareSpace(height, addPage) {
-    if (!this.canFit(height)) {
-      const newPage = await addPage();
-      this.setPage(newPage);
-    }
-  }
-
   setPage(page) {
     this.page = page;
     this.updateBounds();
     this.y = this.yTop;
   }
 
-  checkAvailableSpace(requiredHeight = 0) {
-    this.updateBounds();
-    return (this.y - requiredHeight) >= this.yBottom;
+  async prepareSpace(requiredHeight, addPage) {
+    if (!addPage) return;
+    if (this.canFit(requiredHeight)) return;
+
+    const newPage = await addPage();
+    this.setPage(newPage);
   }
 
   moveDown(amount) {

@@ -1,9 +1,20 @@
-export function drawHeader(page, font, margin) {
+export function drawHeader(page, font, margin, logoImage, logoDims) {
   const { width, height } = page.getSize();
-  page.drawText('HEAD OF ALL HEADERS', {
+  const textHeader = 'PDF LIB CHEAT SHEET'
+
+ if (logoImage) {
+    page.drawImage(logoImage, {
+      x: width / 1.4,
+      y: height - 80,
+      width: logoDims.width,
+      height: logoDims.height,
+    });
+  }
+
+  page.drawText(textHeader, {
     x: margin,
-    y: height - 30,
-    size: 14,
+    y: height - 60,
+    size: 20,
     font: font
   });
 }
